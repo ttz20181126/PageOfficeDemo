@@ -73,8 +73,8 @@ public class DemoController {
 			System.out.println("写出test.doc");
 			urlToFile(docPath,"D:\\lic\\test.doc");
 		}
-		String txtPath = poSysPath + "序列号.txt";
-		File txtFile = new File(txtPath);
+		String txtLocalPath = poSysPath + "序列号.txt";
+		File txtFile = new File(txtLocalPath);
 		if(!txtFile.exists()){
 			System.out.println("写出序列号.txt");
 			urlToFile(txtPath,"D:\\lic\\序列号.txt");
