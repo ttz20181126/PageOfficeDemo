@@ -6,6 +6,8 @@ import java.net.URLConnection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.zhuozhengsoft.pageoffice.poserver.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -103,13 +105,14 @@ public class DemoController {
 
 	/**
 	 * 添加PageOffice的服务器端授权程序Servlet（必须）
+	 * 可以移动到App.class中，springboot启动类。
 	 * @return
 	 */
 	@Bean
-    public ServletRegistrationBean servletRegistrationBean() {
+    public ServletRegistrationBean<Server> servletRegistrationBean() {
 		com.zhuozhengsoft.pageoffice.poserver.Server poserver = new com.zhuozhengsoft.pageoffice.poserver.Server();
 		poserver.setSysPath(poSysPath);//设置PageOffice注册成功后,license.lic文件存放的目录
-		ServletRegistrationBean srb = new ServletRegistrationBean(poserver);
+		ServletRegistrationBean<Server> srb = new ServletRegistrationBean<>(poserver);
 		srb.addUrlMappings("/poserver.zz");
 		srb.addUrlMappings("/posetup.exe");
 		srb.addUrlMappings("/pageoffice.js");
