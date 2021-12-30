@@ -1,5 +1,6 @@
 package com.test.controller;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -8,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zhuozhengsoft.pageoffice.poserver.Server;
+import com.zhuozhengsoft.pageoffice.wordwriter.DataRegion;
+import com.zhuozhengsoft.pageoffice.wordwriter.DataTag;
+import com.zhuozhengsoft.pageoffice.wordwriter.WordDocument;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +27,7 @@ import com.zhuozhengsoft.pageoffice.*;
 @RestController
 public class DemoController {
 	
-	@Value("${posyspath:d:\\lic\\}")
+	@Value("${posyspath:d:\\PageOffice_License\\}")
 	private String poSysPath;
 	
 	//@Value("${popassword}")
@@ -73,16 +77,43 @@ public class DemoController {
 		File file = new File(filePath);
 		if(!file.exists()){
 			System.out.println("写出test.doc");
-			urlToFile(docPath,"D:\\lic\\test.doc");
+			urlToFile(docPath,"D:\\PageOffice_License\\test.doc");
 		}
 		String txtLocalPath = poSysPath + "序列号.txt";
 		File txtFile = new File(txtLocalPath);
 		if(!txtFile.exists()){
 			System.out.println("写出序列号.txt");
-			urlToFile(txtPath,"D:\\lic\\序列号.txt");
+			urlToFile(txtPath,"D:\\PageOffice_License\\序列号.txt");
 		}
 
-		poCtrl.webOpen(poSysPath + "test.doc",OpenModeType.docAdmin,"张三");
+		//设置空间左上角的标题
+		poCtrl.setCaption("质控文件");
+
+		WordDocument doc = new WordDocument();
+
+		//书签1
+		DataRegion dataReg = doc.openDataRegion("PO_USERNAME");
+		dataReg.getShading().setBackgroundPatternColor(Color.pink);
+		//书签2
+		DataRegion dataReg2 = doc.openDataRegion("PO_week");
+		dataReg2.getShading().setBackgroundPatternColor(Color.pink);
+		dataReg.setEditing(true);
+
+		//tag去set值
+		DataTag deptTag = doc.openDataTag("{状态}");
+		deptTag.setValue("very good");//给DataTag对象赋值
+		deptTag.getFont().setColor(Color.GREEN);
+
+		poCtrl.setWriter(doc);
+
+		//设置office编辑tool
+		//poCtrl.setOfficeToolbars(false);//设置office编辑tool
+
+		poCtrl.webOpen(filePath,OpenModeType.docAdmin,"张三");
+
+		//提交权限，不可编辑。
+		//poCtrl.webOpen(filePath,OpenModeType.docSubmitForm,"张三");
+
 		map.put("pageoffice",poCtrl.getHtmlCode("PageOfficeCtrl1"));
 		
 		ModelAndView mv = new ModelAndView("Word");
@@ -92,7 +123,7 @@ public class DemoController {
 	@RequestMapping("/save")
 	public void saveFile(HttpServletRequest request, HttpServletResponse response){
 		FileSaver fs = new FileSaver(request, response);
-		fs.saveToFile("d:\\lic\\" + fs.getFileName());
+		fs.saveToFile("d:\\PageOffice_License\\" + fs.getFileName());
 		System.out.println("~~~~~~~~~~~~~~~正在保存~~~~~~~~~~~~~~~~~");
 		fs.close();
 	}
