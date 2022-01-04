@@ -6,19 +6,32 @@
         <script type="text/javascript">
           	function Save() {
               	document.getElementById("PageOfficeCtrl1").WebSave();
+              	document.getElementById("PageOfficeCtrl1").Alert("保存成功，返回值为：" + document.getElementById("PageOfficeCtrl1").CustomSaveResult);
         	}
         </script>
         <script type="text/javascript">
          function AddSeal() {
 			try{
-        		  document.getElementById("PageOfficeCtrl1").ZoomSeal.AddSeal();
-			}catch (e){ };
-        	}
+        	  document.getElementById("PageOfficeCtrl1").ZoomSeal.AddSeal();
+			}catch (e){
+
+			};
+        }
 
 
         function submit() {
 			    alert("提交到文件服务器");
-        	}
+        }
+
+        function AfterDocumentOpened() {
+            document.getElementById("PageOfficeCtrl1").SetEnableFileCommand(3, false); // 禁止保存
+            document.getElementById("PageOfficeCtrl1").SetEnableFileCommand(4, false); // 禁止另存
+            document.getElementById("PageOfficeCtrl1").SetEnableFileCommand(5, false); //禁止打印
+            document.getElementById("PageOfficeCtrl1").SetEnableFileCommand(6, false); // 禁止页面设置
+
+            //打开文件的时候，给word中当前光标位置赋值一个文本值
+            document.getElementById("PageOfficeCtrl1").Document.Application.Selection.Range.Text = "你可以编辑啦";
+        }
   		</script>
         
     </head>
